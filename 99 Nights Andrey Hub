@@ -217,4 +217,47 @@ local Toggle = maintab:CreateToggle({
 
 local Label = esptab:CreateLabel("TESTANDO POR ANDREY E CHRISTIAN", 4483362458, Color3.fromRGB(255, 255, 255), false) -- Title, Icon, Color, IgnoreTheme
 
+local Toggle = esptab:CreateToggle({
+    Name = "Items Esp",
+    CurrentValue = false,
+    Flag = "ItemsEspToggle",
+    Callback = function(isOn)
+        local itensFolder = workspace:FindFirstChild("ItensEscondidos")
+        if not itensFolder then
+            warn("Pasta 'ItensEscondidos' não encontrada no workspace!")
+            return
+        end
+
+        for _, item in pairs(itensFolder:GetChildren()) do
+            if isOn then
+                -- Criar um BillboardGui para mostrar o nome do item (ou um ponto)
+                if not item:FindFirstChild("ItemEspBillboard") then
+                    local billboard = Instance.new("BillboardGui")
+                    billboard.Name = "ItemEspBillboard"
+                    billboard.Adornee = item
+                    billboard.Size = UDim2.new(0, 100, 0, 50)
+                    billboard.AlwaysOnTop = true
+
+                    local textLabel = Instance.new("TextLabel")
+                    textLabel.Parent = billboard
+                    textLabel.Size = UDim2.new(1, 0, 1, 0)
+                    textLabel.BackgroundTransparency = 1
+                    textLabel.TextColor3 = Color3.new(1, 0, 0)
+                    textLabel.TextStrokeTransparency = 0
+                    textLabel.Text = item.Name or "Item"
+                    textLabel.Font = Enum.Font.SourceSansBold
+                    textLabel.TextScaled = true
+
+                    billboard.Parent = item
+                end
+            else
+                -- Remove o BillboardGui para esconder
+                local billboard = item:FindFirstChild("ItemEspBillboard")
+                if billboard then
+                    billboard:Destroy()
+                end
+            end
+        end
+    end,
+})
 local Label = gametab:CreateLabel("TESTANDO POR ANDREY E CHRISTIAN", 4483362458, Color3.fromRGB(255, 255, 255), false) -- Title, Icon, Color, IgnoreTheme
