@@ -261,3 +261,52 @@ local Toggle = esptab:CreateToggle({
     end,
 })
 local Label = gametab:CreateLabel("TESTANDO POR ANDREY E CHRISTIAN", 4483362458, Color3.fromRGB(255, 255, 255), false) -- Title, Icon, Color, IgnoreTheme
+
+local Toggle = esptab:CreateToggle({
+    Name = "Todos Itens ESP",
+    CurrentValue = false,
+    Flag = "AllItemsEspToggle",
+    Callback = function(isOn)
+        -- Função para verificar se o objeto é parte de um personagem de jogador
+        local function isPlayerCharacter(part)
+            for _, plr in ipairs(Players:GetPlayers()) do
+                if plr.Character and part:IsDescendantOf(plr.Character) then
+                    return true
+                end
+            end
+            return false
+        end
+
+        -- Percorre todos os BaseParts do workspace
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if obj:IsA("BasePart") and not isPlayerCharacter(obj) then
+                if isOn then
+                    if not obj:FindFirstChild("AllItemsEspBillboard") then
+                        local billboard = Instance.new("BillboardGui")
+                        billboard.Name = "AllItemsEspBillboard"
+                        billboard.Adornee = obj
+                        billboard.Size = UDim2.new(0, 100, 0, 50)
+                        billboard.AlwaysOnTop = true
+
+                        local textLabel = Instance.new("TextLabel")
+                        textLabel.Parent = billboard
+                        textLabel.Size = UDim2.new(1, 0, 1, 0)
+                        textLabel.BackgroundTransparency = 1
+                        textLabel.TextColor3 = Color3.new(0, 1, 0)
+                        textLabel.TextStrokeTransparency = 0
+                        textLabel.Text = obj.Name
+                        textLabel.Font = Enum.Font.SourceSansBold
+                        textLabel.TextScaled = true
+
+                        billboard.Parent = obj
+                    end
+                else
+                    local billboard = obj:FindFirstChild("AllItemsEspBillboard")
+                    if billboard then
+                        billboard:Destroy()
+                    end
+                end
+            end
+        end
+    end,
+})
